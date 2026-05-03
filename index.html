@@ -694,10 +694,7 @@ slides.forEach((_, i) => {
     dots.appendChild(d);
 });
 
-function updateSlides() {
-    slides.forEach((s, i) => {
-        s.classList.toggle('visible', i === currentSlide);
-    });
+function updateNav() {
     document.querySelectorAll('.nav-dot').forEach((d, i) => {
         d.classList.toggle('active', i === currentSlide);
     });
@@ -707,7 +704,7 @@ function updateSlides() {
 function goTo(n) {
     currentSlide = Math.max(0, Math.min(slides.length - 1, n));
     slides[currentSlide].scrollIntoView({ behavior: 'smooth' });
-    updateSlides();
+    updateNav();
 }
 function nextSlide() { goTo(currentSlide + 1); }
 function prevSlide() { goTo(currentSlide - 1); }
@@ -732,16 +729,16 @@ const observer = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             const idx = parseInt(entry.target.dataset.index);
             currentSlide = idx;
-            document.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
-            pageNum.textContent = `${idx + 1} / ${slides.length}`;
+            updateNav();
         }
     });
 }, { threshold: 0.5 });
 
 slides.forEach(s => observer.observe(s));
 
-// Init first
-updateSlides();
+// Init nav
+slides.forEach(s => s.classList.add('visible'));
+    updateNav();
 
 // ===== Auto-save: contenteditable changes persist via localStorage =====
 (function() {
